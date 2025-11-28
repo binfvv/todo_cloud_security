@@ -1,0 +1,14 @@
+# File hệ thống của Mac/Windows
+.DS_Store
+Thumbs.db
+
+# File log lỗi
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Thư viện (nếu sau này bạn dùng Node.js)
+node_modules/
+dist/
+.env
+```

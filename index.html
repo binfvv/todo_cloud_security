@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Cloud </title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    
+    <!-- 1. MÀN HÌNH ĐĂNG NHẬP (SPLIT SCREEN) -->
+    <div id="authOverlay" class="auth-wrapper">
+      <div class="login-card">
+        <!-- Cột trái: Branding -->
+        <div class="login-brand">
+          <div class="brand-content">
+            <div class="logo-circle"><i class="fa-solid fa-cloud"></i></div>
+            <h1>Todo Cloud</h1>
+            <p class="brand-slogan">Bảo mật tuyệt đối. Quản lý tối ưu.</p>
+            <ul class="feature-list">
+              <li><i class="fa-solid fa-lock"></i> Mã hóa dữ liệu đầu cuối</li>
+              <li><i class="fa-solid fa-bolt"></i> Đồng bộ thời gian thực</li>
+              <li><i class="fa-solid fa-calendar-check"></i> Lên lịch thông minh</li>
+            </ul>
+          </div>
+          <!-- Hình trang trí -->
+          <div class="blob blob-1"></div>
+          <div class="blob blob-2"></div>
+        </div>
+
+        <!-- Cột phải: Form -->
+        <div class="login-form-container">
+          <div class="form-header">
+            <h2>Chào mừng trở lại! 👋</h2>
+            <p>Đăng nhập để tiếp tục quản lý công việc của bạn.</p>
+          </div>
+
+          <button id="loginBtn" class="btn-google-modern">
+            <div class="google-icon-wrapper">
+              <img
+                class="google-icon"
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google Logo"
+              />
+            </div>
+            <span class="btn-text">Tiếp tục với Google</span>
+          </button>
+
+          <div class="login-footer">
+            Bằng việc đăng nhập, bạn đồng ý với <a href="#">Điều khoản</a> và
+            <a href="#">Bảo mật</a> của chúng tôi.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. GIAO DIỆN CHÍNH (APP CONTAINER) -->
+    <div class="container hidden" id="appContainer">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <!-- Header -->
+        <div class="header-sidebar">
+          <div class="profile">
+            <div class="avatar">?</div>
+            <span id="userNameDisplay">Khách</span>
+          </div>
+
+          <!-- Notification -->
+          <div class="notif-wrapper">
+            <button id="notifBtn" class="notif-btn" title="Thông báo">
+              <i class="fa-regular fa-bell"></i>
+            </button>
+            <span id="notifBadge" class="notif-badge hidden">0</span>
+
+            <div id="notifPanel" class="notif-panel hidden">
+              <div class="notif-header">
+                <span>Thông báo gần đây</span>
+                <button id="clearNotifBtn">Xóa hết</button>
+              </div>
+              <ul id="notifList" class="notif-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu -->
+        <nav class="menu">
+          <button class="menu-item primary-action" id="openTaskForm">
+            <i class="fa-solid fa-plus"></i> Thêm việc mới
+          </button>
+
+          <div class="search-box">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Tìm nhanh..." />
+          </div>
+
+          <div class="menu-group">
+            <button class="menu-item filter-btn active" data-filter="all">
+              <i class="fa-solid fa-inbox"></i>  Tất cả
+            </button>
+            <button class="menu-item filter-btn" data-filter="today">
+              <i class="fa-solid fa-calendar-day"></i>  Hôm nay
+            </button>
+            <button class="menu-item filter-btn" data-filter="upcoming">
+              <i class="fa-solid fa-calendar-week"></i>  Sắp tới
+            </button>
+            <button class="menu-item filter-btn" data-filter="completed">
+              <i class="fa-solid fa-check-circle"></i>  Đã xong
+            </button>
+          </div>
+
+          <button class="menu-item btn-logout" id="logoutBtn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+          </button>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main">
+        <h1 class="title">Tất cả (Inbox)</h1>
+
+        <!-- FORM THÊM NHANH (SIMPLE) -->
+        <div class="add-task-box hidden" id="taskForm">
+          <input
+            class="task-input"
+            id="taskInput"
+            placeholder="Tên công việc chính (VD: Pentest server ABC...)"
+          />
+          <textarea
+            class="description"
+            id="descInput"
+            placeholder="Mô tả chi tiết"
+          ></textarea>
+
+          <!-- Options -->
+          <div class="option-row">
+            <div class="option-group">
+              <label class="option-label"><i class="fa-regular fa-calendar"></i> Hạn chót:</label>
+              <input
+                type="datetime-local"
+                id="dateInput"
+                class="date-picker-custom full-width"
+              />
+            </div>
+            <div class="option-group">
+              <label class="option-label"><i class="fa-solid fa-flag"></i> Mức độ:</label>
+              <select id="priorityInput" class="date-picker-custom full-width">
+                <option value="low">🔵 Thấp</option>
+                <option value="normal" selected>⚪ Bình thường</option>
+                <option value="high">🟠 Cao</option>
+                <option value="urgent">🔴 Khẩn cấp</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="option-row">
+            <div class="option-group full-width">
+              <label class="option-label"><i class="fa-regular fa-clock"></i> Nhắc trước:</label>
+              <select id="alertInput" class="date-picker-custom full-width">
+                <option value="0">Đến giờ là nhắc</option>
+                <option value="5">Trước 5 phút</option>
+                <option value="15">Trước 15 phút</option>
+                <option value="30">Trước 30 phút</option>
+                <option value="60">Trước 1 tiếng</option>
+                <option value="1440">Trước 1 ngày</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bottom">
+            <button class="cancel" id="cancelBtn">Hủy</button>
+            <button class="add" id="addTaskConfirm">Lưu nhiệm vụ</button>
+          </div>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="emptyState">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/7650/7650639.png"
+            width="100"
+            alt="Empty"
+          />
+          <h2>Danh sách trống</h2>
+          <p>Hãy thêm công việc và đặt lịch nhắc nhở ngay!</p>
+          <button class="add-task" id="openTaskFormEmpty">+ Thêm ngay</button>
+        </div>
+
+        <!-- TASK LIST -->
+        <ul id="taskList" class="task-list"></ul>
+      </main>
+    </div>
+
+    <!-- 3. MODAL CHI TIẾT (FULL FEATURES) -->
+    <div id="detailModalOverlay" class="detail-overlay hidden">
+      <div class="detail-modal">
+        <div class="detail-header">
+          <div class="breadcrumb">
+            📥 Inbox <span class="separator">/</span> Chi tiết công việc
+          </div>
+          <div class="header-actions">
+            <button class="btn-icon" title="Copy Link"><i class="fa-solid fa-link"></i></button>
+            <button class="btn-icon close-detail" id="closeDetailBtn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+
+        <div class="detail-body">
+          <!-- Cột Trái -->
+          <div class="detail-main">
+            <div class="detail-title-row">
+              <input type="checkbox" id="detailCheckbox" class="big-checkbox" />
+              <input
+                type="text"
+                id="detailTitle"
+                class="detail-title-input"
+                placeholder="Tên công việc"
+              />
+            </div>
+
+            <div class="detail-section">
+              <div class="section-icon"><i class="fa-solid fa-align-left"></i></div>
+              <textarea
+                id="detailDesc"
+                class="detail-desc-input"
+                placeholder="Thêm mô tả chi tiết..."
+              ></textarea>
+            </div>
+
+            <div class="detail-section">
+              <div class="section-icon"><i class="fa-solid fa-code-branch"></i></div>
+              <div class="subtask-wrapper">
+                <div id="detailSubtaskList" class="detail-subtask-list"></div>
+                <button id="addDetailSubtaskBtn" class="btn-add-subtask">
+                  <i class="fa-solid fa-plus"></i> Thêm việc nhỏ (Sub-task)
+                </button>
+              </div>
+            </div>
+
+            <!-- Khu vực Bình luận -->
+            <div class="detail-comments">
+              <div class="comment-header">Bình luận</div>
+              <!-- Danh sách bình luận sẽ được render vào đây -->
+              <div id="detailCommentList" class="comment-list"></div> 
+              
+              <div class="comment-input-box">
+                <div class="avatar small">Me</div>
+                <input
+                  type="text"
+                  placeholder="Viết bình luận rồi nhấn Enter..."
+                  class="comment-field"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột Phải -->
+          <div class="detail-sidebar">
+            <div class="meta-group">
+              <div class="meta-label">Project</div>
+              <div class="meta-value">📥 Inbox</div>
+            </div>
+
+            <div class="meta-group">
+              <div class="meta-label">Ngày hết hạn</div>
+              <input type="datetime-local" id="detailDate" class="meta-input" />
+            </div>
+
+            <div class="meta-group">
+              <div class="meta-label">Mức độ</div>
+              <select id="detailPriority" class="meta-input">
+                <option value="low">🔵 Thấp (P4)</option>
+                <option value="normal">⚪ Bình thường (P3)</option>
+                <option value="high">🟠 Cao (P2)</option>
+                <option value="urgent">🔴 Khẩn cấp (P1)</option>
+              </select>
+            </div>
+
+            <div class="meta-group">
+              <div class="meta-label">Nhắc nhở</div>
+              <select id="detailAlert" class="meta-input">
+                <option value="0">Đúng giờ</option>
+                <option value="5">Trước 5p</option>
+                <option value="15">Trước 15p</option>
+                <option value="30">Trước 30p</option>
+              </select>
+            </div>
+
+            <button id="saveDetailBtn" class="btn-save-detail">
+              Lưu thay đổi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN SCRIPT -->
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

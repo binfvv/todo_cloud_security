@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Hình nền đám mây màu chủ đạo -->
+  <path d="M48 20h-4.2c-2.3-6.5-8.5-11-15.8-11-9.3 0-16.9 7.6-16.9 16.9 0 0.6 0 1.2 0.1 1.8-7.3 1.4-12.8 7.8-12.8 15.3 0 8.6 7 15.6 15.6 15.6h34c7.9 0 14.4-6.4 14.4-14.4s-6.5-14.2-14.4-14.2z" fill="#db4c3f"/>
+  
+  <!-- Dấu tích màu trắng -->
+  <path d="M20 34l8 8 18-18" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
